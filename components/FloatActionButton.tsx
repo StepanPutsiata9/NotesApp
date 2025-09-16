@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Feather from "@expo/vector-icons/Feather";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
@@ -29,7 +30,7 @@ export default function FloatingActionButton() {
 
   const rotateInterpolate = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "45deg"],
+    outputRange: ["0deg", "90deg"],
   });
 
   const bgColorInterpolate = animation.interpolate({
@@ -74,7 +75,7 @@ export default function FloatingActionButton() {
           style={styles.subButton}
           onPress={() => router.push("/secret")}
         >
-          <MaterialIcons name="security" size={24} color="#fff" />
+          <AntDesign name="lock" size={24} color="#fff" />
         </TouchableOpacity>
       </Animated.View>
 
@@ -101,7 +102,7 @@ export default function FloatingActionButton() {
           activeOpacity={0.8}
         >
           <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
-            <Ionicons name="add" size={32} color="#FFF" />
+            <Feather name="more-horizontal" size={32} color="white" />
           </Animated.View>
         </TouchableOpacity>
       </Animated.View>
