@@ -11,34 +11,28 @@ export default function Index() {
     <SafeAreaView style={styles.container}>
       <Header />
       <Search />
-      <NotesCard
-        isSecret={false}
-        categoryColor="#6A3EA1"
-        categoryName="Идеи"
-        title="Мой проект"
-        date="15.01.2024"
-        description="Интересная идея для нового приложения..."
-      />
-
-      <NotesCard
-        isSecret={true}
-        categoryColor="#FF6B6B"
-        categoryName="Личное"
-        title="Секретные мысли"
-        date="10.01.2024"
-        description="Это мои личные мысли, которые никто не должен видеть..."
-      />
 
       <FlatList
-        data={[]}
-        renderItem={(item) => <Text>1</Text>}
-        keyExtractor={(el) => el}
+        data={[{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]}
+        showsVerticalScrollIndicator={false}
+        renderItem={(item) => (
+          <NotesCard
+            isSecret={true}
+            categoryColor="#FF6B6B"
+            categoryName="Личное"
+            title="Секретные мысли"
+            date="10.01.2024"
+            description="Это мои личные мысли, которые никто не должен видеть..."
+          />
+        )}
+        keyExtractor={(el) => el.id.toString()}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <EmptyImage />
             <Text style={styles.emptyText}>Пока заметок нет...</Text>
           </View>
         }
+        contentContainerStyle={styles.flatlistContainer}
       />
       <FloatingActionButton />
     </SafeAreaView>
@@ -60,5 +54,8 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 24,
     color: "#6A3EA1",
+  },
+  flatlistContainer: {
+    paddingBottom: 60,
   },
 });

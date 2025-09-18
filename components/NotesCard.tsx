@@ -11,7 +11,6 @@ export default function NotesCard({
 }: NotesCardProps) {
   return (
     <View style={styles.container}>
-      {/* Верхняя строка с иконкой секретности и категорией */}
       <View style={styles.header}>
         <View style={styles.secretIcon}>
           <AntDesign
@@ -29,7 +28,6 @@ export default function NotesCard({
         </View>
       </View>
 
-      {/* Основной контент */}
       <View style={styles.content}>
         <View style={styles.titleView}>
           <Text style={styles.title} numberOfLines={1}>
@@ -54,7 +52,7 @@ export default function NotesCard({
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#f4eeeeff",
     borderRadius: 16,
     marginVertical: 8,
     shadowColor: "#000",

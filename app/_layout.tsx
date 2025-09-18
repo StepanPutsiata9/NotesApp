@@ -1,14 +1,28 @@
 import { Stack } from "expo-router";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+
 export default function RootLayout() {
   return (
     <Provider store={store}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="createNote" options={{ headerShown: false }} />
-        <Stack.Screen name="secret" options={{ headerShown: false }} />
-      </Stack>
+      <AppStack />
     </Provider>
   );
+}
+function AppStack() {
+  const user = false;
+  if (!user) {
+    return (
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      </Stack>
+    );
+  }
+  if (user) {
+    return (
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(root)" options={{ headerShown: false }} />
+      </Stack>
+    );
+  }
 }
