@@ -1,58 +1,84 @@
+import Trash from "@/components/SVGComponents/Trash";
 import { AntDesign } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
-export default function NotesCard({
-  isSecret = false,
-  categoryColor = "#6A3EA1",
-  categoryName = "Рассуждения",
-  title = "Qwqwq",
-  date = "22.12.2022",
-  description = "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",
-}: NotesCardProps) {
+interface INotesCardProps {
+  item: INote;
+}
+
+export default function NotesCard({ item }: INotesCardProps) {
+  const renderRightActions = () => (
+    <RectButton style={styles.deleteButton} onPress={() => {}}>
+      <View style={styles.deleteContent}>
+        <View style={styles.trashContainer}>
+          <Trash />
+        </View>
+        <Text style={styles.deleteText}>Удалить</Text>
+      </View>
+    </RectButton>
+  );
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.secretIcon}>
-          <AntDesign
-            name={isSecret ? "lock" : "unlock"}
-            size={20}
-            color={isSecret ? "#FF6B6B" : "#4ECDC4"}
-          />
+    <Swipeable
+      overshootLeft={false}
+      overshootRight={false}
+      renderRightActions={renderRightActions}
+      friction={2}
+      rightThreshold={40}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.secretIcon}>
+            <AntDesign
+              name={item.isSecret ? "lock" : "unlock"}
+              size={20}
+              color={"#000"}
+            />
+          </View>
+
+          <View style={styles.categoryView}>
+            <View
+              style={[
+                styles.circleView,
+                { backgroundColor: item.categoryColor },
+              ]}
+            />
+            <Text style={styles.categoryText}>{item.categoryName}</Text>
+          </View>
         </View>
 
-        <View style={styles.categoryView}>
-          <View
-            style={[styles.circleView, { backgroundColor: categoryColor }]}
-          />
-          <Text style={styles.categoryText}>{categoryName}</Text>
-        </View>
-      </View>
+        <View style={styles.content}>
+          <View style={styles.titleView}>
+            <Text style={styles.title} numberOfLines={1}>
+              {item.title}
+            </Text>
+            <Text style={styles.line}> | </Text>
+            <Text style={styles.date}>{item.date}</Text>
+          </View>
 
-      <View style={styles.content}>
-        <View style={styles.titleView}>
-          <Text style={styles.title} numberOfLines={1}>
-            {title}
+          <Text style={styles.description} numberOfLines={3}>
+            {item?.description?.slice(0, 55) || ""}
+            {(item?.description?.length || 0) > 55 ? "..." : ""}
           </Text>
-          <Text style={styles.line}> | </Text>
-          <Text style={styles.date}>{date}</Text>
         </View>
 
-        <Text style={styles.description} numberOfLines={3}>
-          {description}
-        </Text>
+        <View
+          style={[
+            styles.decorativeLine,
+            { backgroundColor: item.categoryColor },
+          ]}
+        />
       </View>
-
-      <View
-        style={[styles.decorativeLine, { backgroundColor: categoryColor }]}
-      />
-    </View>
+    </Swipeable>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#f4eeeeff",
+    backgroundColor: "#f8f2f2ff",
     borderRadius: 16,
     marginVertical: 8,
     shadowColor: "#000",
@@ -152,5 +178,40 @@ const styles = StyleSheet.create({
     height: 3,
     borderBottomLeftRadius: 16,
     borderBottomRightRadius: 16,
+  },
+
+  deleteButton: {
+    backgroundColor: "#FF3B30",
+    justifyContent: "center",
+    alignItems: "center",
+    width: 150,
+    borderRadius: 16,
+    marginVertical: 8,
+    marginLeft: -30,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    elevation: 3,
+  },
+  deleteContent: {
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  trashContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deleteText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });

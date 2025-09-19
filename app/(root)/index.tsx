@@ -3,29 +3,23 @@ import Header from "@/components/Header";
 import NotesCard from "@/components/NotesCard";
 import Search from "@/components/Search";
 import EmptyImage from "@/components/SVGComponents/EmptyImage";
+import { RootState } from "@/store/store";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 
 export default function Index() {
+  const { notes } = useSelector((state: RootState) => state.notes);
   return (
     <SafeAreaView style={styles.container}>
       <Header />
       <Search />
 
       <FlatList
-        data={[{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]}
+        data={notes}
         showsVerticalScrollIndicator={false}
-        renderItem={(item) => (
-          <NotesCard
-            isSecret={true}
-            categoryColor="#FF6B6B"
-            categoryName="Личное"
-            title="Секретные мысли"
-            date="10.01.2024"
-            description="Это мои личные мысли, которые никто не должен видеть..."
-          />
-        )}
-        keyExtractor={(el) => el.id.toString()}
+        renderItem={({ item }) => <NotesCard item={item} />}
+        keyExtractor={(el) => el?.title?.toString() || Math.random().toString()}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <EmptyImage />

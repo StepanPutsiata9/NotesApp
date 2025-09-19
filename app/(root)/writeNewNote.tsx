@@ -1,4 +1,4 @@
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -9,44 +9,41 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-// import Buy from "@/components/SVGComponents/CategorySvg/Buy";
-// import Goal from "@/components/SVGComponents/CategorySvg/Goal";
-// import Guidance from "@/components/SVGComponents/CategorySvg/Guidance";
-// import Light from "@/components/SVGComponents/CategorySvg/Light";
-// import Routine from "@/components/SVGComponents/CategorySvg/Routine";
+import { createNewNote } from "@/store/slices/notesSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-// const CategoryIcon = ({ categoryName }: { categoryName: string }) => {
-//   const icons: { [key: string]: React.ComponentType } = {
-//     light: Light,
-//     buy: Buy,
-//     goal: Goal,
-//     guidance: Guidance,
-//     routine: Routine,
-//   };
-
-//   const IconComponent = icons[categoryName] || Light;
-//   return <IconComponent />;
-// };
+import { useAppDispatch } from "../../store/store";
 
 export default function NoteEditor() {
   const router = useRouter();
-  //   const params = useLocalSearchParams();
+  const params = useLocalSearchParams();
+  const dispatch = useAppDispatch();
+  console.log(params);
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   const handleSaveNote = () => {
-    router.back();
-  };
+    const formatDate = (date: Date, separator: string = "-") => {
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      return `${day}${separator}${month}${separator}${year}`;
+    };
 
-  //   if (!category) {
-  //     return (
-  //       <SafeAreaView style={styles.container}>
-  //         <Text>Ошибка: категория не выбрана</Text>
-  //       </SafeAreaView>
-  //     );
-  //   }
+    dispatch(
+      createNewNote({
+        title: title,
+        isSecret: false,
+        categoryColor: params.color as string,
+        categoryName: params.title as string,
+        description: content,
+        date: formatDate(new Date()),
+      })
+    );
+
+    router.push("/(root)");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -73,25 +70,16 @@ export default function NoteEditor() {
         keyboardOpeningTime={0}
         enableResetScrollToCoords={false}
       >
-        {/* <View
+        <View style={styles.categoryView}>
+          <Text style={styles.categoryTitle}>Категория:</Text>
+          <View
             style={[
-              styles.categorySection,
-              //   { backgroundColor: category.color },
+              styles.categoryColor,
+              { backgroundColor: params.color as string },
             ]}
-          >
-            <View style={styles.categoryInfo}>
-              <View style={styles.categoryIconWrapper}>
-                {/* <CategoryIcon categoryName={category.image} /> 
-              </View>
-              <View>
-                <Text style={styles.categoryLabel}>Тема:</Text>
-                 <Text style={styles.categoryTitle}>{category.title}</Text> 
-              </View>
-            </View>
-          </View> 
-          */}
-
-        {/* Поле для названия заметки */}
+          ></View>
+          <Text style={styles.categoryTitle}>{params.title}</Text>
+        </View>
         <View style={styles.titleSection}>
           <TextInput
             style={styles.titleInput}
@@ -186,9 +174,22 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   categoryTitle: {
-    color: "#fff",
+    color: "#000",
     fontSize: 20,
     fontWeight: "700",
+  },
+
+  categoryView: {
+    paddingHorizontal: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+  },
+  categoryColor: {
+    width: 15,
+    height: 15,
+    borderRadius: 25,
+    marginHorizontal: 3,
   },
   titleSection: {
     paddingHorizontal: 16,

@@ -4,6 +4,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -151,11 +153,9 @@ export default function FavoriteNotes() {
     return (
       <SafeAreaView style={styles.container}>
         <SubHeader title={"Секретные заметки"} />
-        <KeyboardAwareScrollView
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-          enableOnAndroid={true}
-          showsVerticalScrollIndicator={false}
         >
           <View style={styles.authContainer}>
             <Text style={styles.title}>Введите пароль</Text>
@@ -196,7 +196,7 @@ export default function FavoriteNotes() {
               <Text style={styles.loginButtonText}>Войти</Text>
             </TouchableOpacity>
           </View>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }

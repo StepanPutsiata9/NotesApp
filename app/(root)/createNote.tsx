@@ -45,11 +45,11 @@ const CategoryItem = ({
   selectCategory,
 }: {
   c: ICategory;
-  selectCategory: (value: string) => void;
+  selectCategory: (selectedCategory: SelectedCategory) => void;
 }) => {
   return (
     <TouchableOpacity
-      onPress={() => selectCategory(c.title)}
+      onPress={() => selectCategory({ title: c.title, color: c.color })}
       style={[styles.categoryItem, { backgroundColor: c.color }]}
     >
       <View style={styles.categoryIcon}>
@@ -65,17 +65,26 @@ const CategoryItem = ({
 
 export default function CreateNotes() {
   const memoizedCategories = useMemo(() => category, []);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const selectCategory = (category: string) => {
+  const [selectedCategory, setSelectedCategory] = useState<SelectedCategory>({
+    title: "",
+    color: "",
+  });
+  const selectCategory = (category: SelectedCategory) => {
     setSelectedCategory(category);
   };
   const router = useRouter();
   const handleCreateNotes = () => {
-    if (selectedCategory === "") {
+    if (selectedCategory.title === "") {
       Alert.alert("Нужно выбрать категорию!");
       return;
     }
-    router.push("/writeNewNote");
+    router.push({
+      pathname: "/writeNewNote",
+      params: {
+        title: selectedCategory.title,
+        color: selectedCategory.color,
+      },
+    });
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -86,7 +95,9 @@ export default function CreateNotes() {
       <View style={styles.selectedCategoryView}>
         <Text style={styles.selectedCategoryText}>
           Выбранная категория:{" "}
-          <Text style={styles.selectedCategory}>{selectedCategory || ""}</Text>
+          <Text style={styles.selectedCategory}>
+            {selectedCategory.title || ""}
+          </Text>
         </Text>
       </View>
       <ScrollView>

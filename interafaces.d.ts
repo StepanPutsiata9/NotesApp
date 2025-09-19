@@ -5,11 +5,15 @@ interface ICategory {
   image: string;
 }
 
-interface NotesCardProps {
+interface INote {
   isSecret?: boolean;
   categoryColor?: string;
   categoryName?: string;
   title?: string;
   date?: string;
   description?: string;
+}
+interface SelectedCategory {
+  title: string;
+  color: string;
 }
