@@ -18,8 +18,6 @@ export default function NoteEditor() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const dispatch = useAppDispatch();
-  console.log(params);
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 

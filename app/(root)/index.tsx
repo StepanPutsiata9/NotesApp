@@ -1,3 +1,4 @@
+import Filter from "@/components/Filter";
 import FloatingActionButton from "@/components/FloatActionButton";
 import Header from "@/components/Header";
 import NotesCard from "@/components/NotesCard";
@@ -14,7 +15,7 @@ export default function Index() {
     <SafeAreaView style={styles.container}>
       <Header />
       <Search />
-
+      <Filter />
       <FlatList
         data={notes}
         showsVerticalScrollIndicator={false}
@@ -26,7 +27,7 @@ export default function Index() {
             <Text style={styles.emptyText}>Пока заметок нет...</Text>
           </View>
         }
-        contentContainerStyle={styles.flatlistContainer}
+        contentContainerStyle={styles.flatlistContentContainer}
       />
       <FloatingActionButton />
     </SafeAreaView>
@@ -42,14 +43,14 @@ const styles = StyleSheet.create({
   emptyContainer: {
     flexDirection: "column",
     gap: 10,
-    justifyContent: "center",
     alignItems: "center",
   },
+
   emptyText: {
     fontSize: 24,
     color: "#6A3EA1",
   },
-  flatlistContainer: {
+  flatlistContentContainer: {
     paddingBottom: 60,
   },
 });

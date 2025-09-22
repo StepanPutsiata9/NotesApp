@@ -3,50 +3,60 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface NotesState {
   notes: INote[];
+  secretNotes: INote[];
 }
 
 const initialState: NotesState = {
   notes: [
     {
-      isSecret: true,
+      isSecret: false,
       categoryColor: "#FF6B6B",
       categoryName: "Личное",
-      title: "Секретные мысли",
+      title: "1",
       date: "10.01.2024",
-      description: "Это мои личные мысли, которые никто не должен видеть",
+      description: "111111",
     },
     {
-      isSecret: true,
+      isSecret: false,
       categoryColor: "#F8C715",
       categoryName: "Личное",
-      title: "Секретные мысли2",
+      title: "2",
       date: "10.01.2024",
-      description: "Это мои личные мысли, которые никто не должен видеть",
+      description: "2222222222222",
     },
     {
-      isSecret: true,
+      isSecret: false,
       categoryColor: "#FF6B6B",
       categoryName: "Личное",
-      title: "Секретные мысли3",
+      title: "3",
       date: "10.01.2024",
-      description: "Это мои личные мысли, которые никто не должен видеть",
+      description: "333333333333333333333333333333",
     },
   ],
+  secretNotes: [],
 };
 
 export const notesSlice = createSlice({
   name: "notes",
   initialState,
   reducers: {
-    increment: (state) => {
-      // state.value += 1;
+    deleteNote: (state, action: PayloadAction<string>) => {
+      state.notes = state.notes.filter((note) => note.title !== action.payload);
     },
 
     createNewNote: (state, action: PayloadAction<INote>) => {
       state.notes.push(action.payload);
     },
+
+    setSecretNote: (state, action: PayloadAction<string>) => {
+      const note = state.notes.find((n) => n.title === action.payload) as INote;
+      state.notes = state.notes.filter((note) => note.title !== action.payload);
+      console.log(note);
+      note.isSecret = true;
+      state.secretNotes.push(note);
+    },
   },
 });
 
-export const { increment, createNewNote } = notesSlice.actions;
+export const { deleteNote, createNewNote, setSecretNote } = notesSlice.actions;
 export default notesSlice.reducer;

@@ -1,9 +1,13 @@
+import NotesCard from "@/components/NotesCard";
 import SubHeader from "@/components/SubHeader";
+import EmptyImage from "@/components/SVGComponents/EmptyImage";
+import { RootState } from "@/store/store";
 import Feather from "@expo/vector-icons/Feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
   Alert,
+  FlatList,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -14,6 +18,7 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useSelector } from "react-redux";
 
 export default function FavoriteNotes() {
   const [password, setPassword] = useState("");
@@ -23,6 +28,8 @@ export default function FavoriteNotes() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [isSettingPassword, setIsSettingPassword] = useState(false);
+
+  const { secretNotes } = useSelector((state: RootState) => state.notes);
 
   useEffect(() => {
     checkFirstTime();
@@ -99,6 +106,7 @@ export default function FavoriteNotes() {
               <TextInput
                 style={styles.input}
                 placeholder="Новый пароль"
+                placeholderTextColor={"#bcb7b7ff"}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
@@ -120,6 +128,7 @@ export default function FavoriteNotes() {
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
+                placeholderTextColor={"#bcb7b7ff"}
                 placeholder="Подтвердите пароль"
                 value={confirmPassword}
                 onChangeText={setConfirmPassword}
@@ -166,6 +175,7 @@ export default function FavoriteNotes() {
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
+                placeholderTextColor={"#bcb7b7ff"}
                 placeholder="Введите пароль"
                 value={password}
                 onChangeText={setPassword}
@@ -200,11 +210,21 @@ export default function FavoriteNotes() {
       </SafeAreaView>
     );
   }
-
   return (
     <SafeAreaView style={styles.container}>
       <SubHeader title={"Секретные заметки"} />
-      <Text>secret</Text>
+      <FlatList
+        data={secretNotes}
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }) => <NotesCard item={item} />}
+        keyExtractor={(el) => el?.title?.toString() || Math.random().toString()}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <EmptyImage />
+            <Text style={styles.emptyText}>Пока заметок нет...</Text>
+          </View>
+        }
+      />
     </SafeAreaView>
   );
 }
@@ -213,6 +233,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingHorizontal: 16,
   },
   authContainer: {
     flex: 1,
@@ -287,5 +308,16 @@ const styles = StyleSheet.create({
     color: "#666",
     marginTop: 10,
     textAlign: "center",
+  },
+
+  emptyContainer: {
+    flexDirection: "column",
+    gap: 10,
+    alignItems: "center",
+  },
+
+  emptyText: {
+    fontSize: 24,
+    color: "#6A3EA1",
   },
 });

@@ -1,6 +1,8 @@
 import Trash from "@/components/SVGComponents/Trash";
+import { deleteNote, setSecretNote } from "@/store/slices/notesSlice";
+import { useAppDispatch } from "@/store/store";
 import { AntDesign } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 
@@ -9,8 +11,21 @@ interface INotesCardProps {
 }
 
 export default function NotesCard({ item }: INotesCardProps) {
+  const dispatch = useAppDispatch();
+  const deleteNoteCard = (title: string) => {
+    dispatch(deleteNote(title));
+    console.log("delete");
+  };
+
+  const setSecret = (title: string) => {
+    dispatch(setSecretNote(title));
+    console.log("secret");
+  };
   const renderRightActions = () => (
-    <RectButton style={styles.deleteButton} onPress={() => {}}>
+    <RectButton
+      style={styles.deleteButton}
+      onPress={() => deleteNoteCard(item?.title || "")}
+    >
       <View style={styles.deleteContent}>
         <View style={styles.trashContainer}>
           <Trash />
@@ -30,13 +45,16 @@ export default function NotesCard({ item }: INotesCardProps) {
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <View style={styles.secretIcon}>
+          <TouchableOpacity
+            onPress={() => setSecret(item?.title || "")}
+            style={styles.secretIcon}
+          >
             <AntDesign
               name={item.isSecret ? "lock" : "unlock"}
               size={20}
               color={"#000"}
             />
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.categoryView}>
             <View
@@ -52,7 +70,8 @@ export default function NotesCard({ item }: INotesCardProps) {
         <View style={styles.content}>
           <View style={styles.titleView}>
             <Text style={styles.title} numberOfLines={1}>
-              {item.title}
+              {item.title?.slice(0, 30)}
+              {(item?.title?.length || 0) > 55 ? "..." : ""}
             </Text>
             <Text style={styles.line}> | </Text>
             <Text style={styles.date}>{item.date}</Text>
