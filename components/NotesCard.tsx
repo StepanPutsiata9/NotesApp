@@ -20,12 +20,10 @@ export default function NotesCard({ item }: INotesCardProps) {
   const router = useRouter();
   const deleteNoteCard = (title: string) => {
     dispatch(deleteNote(title));
-    console.log("delete");
   };
 
   const setSecret = (title: string) => {
     dispatch(setSecretNote(title));
-    console.log("secret");
   };
 
   const handleRedactNote = () => {
