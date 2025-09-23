@@ -83,6 +83,18 @@ export const notesSlice = createSlice({
     clearSelectedNote: (state) => {
       state.selectedNote = null;
     },
+    updateNote: (state, action: PayloadAction<INote>) => {
+      if (action.payload.isSecret) {
+        state.secretNotes = state.secretNotes.map((item) =>
+          item.id === action.payload.id ? action.payload : item
+        );
+      } else {
+        state.notes = state.notes.map((item) =>
+          item.id === action.payload.id ? action.payload : item
+        );
+        applyFilters(state);
+      }
+    },
   },
 });
 
@@ -101,7 +113,6 @@ function applyFilters(state: NotesState) {
 
   state.filtredNotes = filtered;
 }
-
 export const {
   deleteNote,
   createNewNote,
@@ -111,5 +122,6 @@ export const {
   setSearch,
   redactNote,
   clearSelectedNote,
+  updateNote,
 } = notesSlice.actions;
 export default notesSlice.reducer;

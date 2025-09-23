@@ -71,7 +71,7 @@ export default function CreateNotes() {
   const selectCategory = (category: SelectedCategory) => {
     setSelectedCategory(category);
     const selected = category;
-    if (selectedCategory.title === "") {
+    if (selected.title === "") {
       Alert.alert("Нужно выбрать категорию!");
       return;
     }

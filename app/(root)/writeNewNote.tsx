@@ -9,7 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { clearSelectedNote, createNewNote } from "@/store/slices/notesSlice";
+import {
+  clearSelectedNote,
+  createNewNote,
+  updateNote,
+} from "@/store/slices/notesSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useSelector } from "react-redux";
@@ -38,12 +42,28 @@ export default function NoteEditor() {
           categoryName: params.title as string,
           description: content,
           date: formatDate(new Date()),
+          id: Math.random(),
         })
       );
     } else {
+      dispatch(
+        updateNote({
+          title: title || selectedNote.title,
+          isSecret: selectedNote.isSecret,
+          categoryColor: selectedNote.categoryColor as string,
+          categoryName: selectedNote.categoryName as string,
+          description: content || selectedNote.description,
+          date: formatDate(new Date()),
+          id: selectedNote.id,
+        })
+      );
     }
     dispatch(clearSelectedNote());
-    router.push("/(root)");
+    if (selectedNote?.isSecret) {
+      router.back();
+    } else {
+      router.push("/(root)");
+    }
   };
   useFocusEffect(() => {
     return () => dispatch(clearSelectedNote());

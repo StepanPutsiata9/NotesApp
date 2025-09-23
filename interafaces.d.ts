@@ -12,6 +12,7 @@ interface INote {
   title?: string;
   date?: string;
   description?: string;
+  id: number;
 }
 interface SelectedCategory {
   title: string;
