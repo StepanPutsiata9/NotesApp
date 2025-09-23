@@ -1,4 +1,6 @@
 import { category } from "@/constans";
+import { clearFilters, setFilter } from "@/store/slices/notesSlice";
+import { useAppDispatch } from "@/store/store";
 import { Key, useMemo, useState } from "react";
 import {
   ScrollView,
@@ -11,9 +13,19 @@ import {
 export default function Filter() {
   const [selectedCategory, setSelectedCategory] = useState<Key | null>(null);
   const memoizedCategories = useMemo(() => category, []);
+  const dispatch = useAppDispatch();
 
   const handleCategoryPress = (index: Key) => {
-    setSelectedCategory(selectedCategory === index ? null : index);
+    const newSelectedCategory = selectedCategory === index ? null : index;
+    setSelectedCategory(newSelectedCategory);
+
+    if (newSelectedCategory !== null) {
+      const numericIndex = Number(newSelectedCategory);
+      dispatch(setFilter(memoizedCategories[numericIndex].title));
+    }
+    if (newSelectedCategory === null) {
+      dispatch(clearFilters());
+    }
   };
 
   const getLighterColor = (color: string, percent: number = 30) => {

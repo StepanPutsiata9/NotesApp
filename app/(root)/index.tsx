@@ -10,14 +10,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
 export default function Index() {
-  const { notes } = useSelector((state: RootState) => state.notes);
+  const { filtredNotes } = useSelector((state: RootState) => state.notes);
   return (
     <SafeAreaView style={styles.container}>
       <Header />
       <Search />
       <Filter />
       <FlatList
-        data={notes}
+        data={filtredNotes}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <NotesCard item={item} />}
         keyExtractor={(el) => el?.title?.toString() || Math.random().toString()}
