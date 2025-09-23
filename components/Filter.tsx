@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
     flexGrow: 0,
   },
   contentContainer: {
-    paddingHorizontal: 16,
     gap: 8,
     marginBottom: 8,
   },

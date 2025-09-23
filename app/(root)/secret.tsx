@@ -16,7 +16,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 
@@ -90,11 +89,9 @@ export default function FavoriteNotes() {
     return (
       <SafeAreaView style={styles.container}>
         <SubHeader title={"Установка пароля"} />
-        <KeyboardAwareScrollView
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-          enableOnAndroid={true}
-          showsVerticalScrollIndicator={false}
         >
           <View style={styles.authContainer}>
             <Text style={styles.title}>Установите пароль</Text>
@@ -153,7 +150,7 @@ export default function FavoriteNotes() {
               Пароль должен содержать минимум 6 символов
             </Text>
           </View>
-        </KeyboardAwareScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -314,6 +311,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 10,
     alignItems: "center",
+    marginTop: 100,
   },
 
   emptyText: {
