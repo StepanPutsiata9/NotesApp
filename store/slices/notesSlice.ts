@@ -44,10 +44,12 @@ export const notesSlice = createSlice({
   reducers: {
     deleteNote: (state, action: PayloadAction<string>) => {
       state.notes = state.notes.filter((note) => note.title !== action.payload);
+      state.filtredNotes = state.notes;
     },
 
     createNewNote: (state, action: PayloadAction<INote>) => {
       state.notes.push(action.payload);
+      state.filtredNotes = state.notes;
     },
 
     setSecretNote: (state, action: PayloadAction<string>) => {
@@ -61,6 +63,7 @@ export const notesSlice = createSlice({
         );
         note.isSecret = true;
         state.secretNotes.push(note);
+        state.filtredNotes = state.notes;
       }
       if (secretNote) {
         state.secretNotes = state.secretNotes.filter(
@@ -68,6 +71,7 @@ export const notesSlice = createSlice({
         );
         secretNote.isSecret = false;
         state.notes.push(secretNote);
+        state.filtredNotes = state.notes;
       }
     },
 
@@ -79,6 +83,12 @@ export const notesSlice = createSlice({
     clearFilters: (state) => {
       state.filtredNotes = state.notes;
     },
+
+    setSearch: (state, action: PayloadAction<string>) => {
+      state.filtredNotes = state.filtredNotes.filter((item) =>
+        item?.title?.toLowerCase().includes(action.payload.toLowerCase())
+      );
+    },
   },
 });
 
@@ -88,5 +98,6 @@ export const {
   setSecretNote,
   setFilter,
   clearFilters,
+  setSearch,
 } = notesSlice.actions;
 export default notesSlice.reducer;

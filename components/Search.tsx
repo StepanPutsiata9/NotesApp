@@ -1,9 +1,24 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
-export default function Search() {
+interface SearchProps {
+  onSearch: (searchTerm: string) => void;
+  debounceDelay?: number;
+}
+
+export default function Search({ onSearch, debounceDelay = 300 }: SearchProps) {
   const [search, setSearch] = useState<string>("");
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      onSearch(search);
+    }, debounceDelay);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [search, debounceDelay, onSearch]);
 
   const clearSearch = () => {
     setSearch("");
@@ -34,7 +49,6 @@ export default function Search() {
 }
 
 const styles = StyleSheet.create({
-
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -43,7 +57,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#6A3EA1",
     paddingHorizontal: 12,
-    marginBottom:15,
+    marginBottom: 15,
   },
   searchIcon: {
     marginRight: 8,
