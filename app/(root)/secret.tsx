@@ -212,6 +212,7 @@ export default function FavoriteNotes() {
       <SubHeader title={"Секретные заметки"} />
       <FlatList
         data={secretNotes}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => <NotesCard item={item} />}
         keyExtractor={(el) => el?.title?.toString() || Math.random().toString()}
