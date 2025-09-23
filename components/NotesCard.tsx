@@ -1,7 +1,12 @@
 import Trash from "@/components/SVGComponents/Trash";
-import { deleteNote, setSecretNote } from "@/store/slices/notesSlice";
+import {
+  deleteNote,
+  redactNote,
+  setSecretNote,
+} from "@/store/slices/notesSlice";
 import { useAppDispatch } from "@/store/store";
 import { AntDesign } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Swipeable from "react-native-gesture-handler/Swipeable";
@@ -12,6 +17,7 @@ interface INotesCardProps {
 
 export default function NotesCard({ item }: INotesCardProps) {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const deleteNoteCard = (title: string) => {
     dispatch(deleteNote(title));
     console.log("delete");
@@ -20,6 +26,11 @@ export default function NotesCard({ item }: INotesCardProps) {
   const setSecret = (title: string) => {
     dispatch(setSecretNote(title));
     console.log("secret");
+  };
+
+  const handleRedactNote = () => {
+    dispatch(redactNote(item));
+    router.push("/writeNewNote");
   };
   const renderRightActions = () => (
     <RectButton
@@ -43,7 +54,11 @@ export default function NotesCard({ item }: INotesCardProps) {
       friction={2}
       rightThreshold={40}
     >
-      <View style={styles.container}>
+      <TouchableOpacity
+        onPress={handleRedactNote}
+        style={styles.container}
+        activeOpacity={1}
+      >
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => setSecret(item?.title || "")}
@@ -89,7 +104,7 @@ export default function NotesCard({ item }: INotesCardProps) {
             { backgroundColor: item.categoryColor },
           ]}
         />
-      </View>
+      </TouchableOpacity>
     </Swipeable>
   );
 }

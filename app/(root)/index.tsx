@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import NotesCard from "@/components/NotesCard";
 import Search from "@/components/Search";
 import EmptyImage from "@/components/SVGComponents/EmptyImage";
-import { clearFilters, setSearch } from "@/store/slices/notesSlice";
+import { setSearch } from "@/store/slices/notesSlice";
 import { RootState, useAppDispatch } from "@/store/store";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,11 +14,7 @@ export default function Index() {
   const { filtredNotes } = useSelector((state: RootState) => state.notes);
   const dispatch = useAppDispatch();
   const handleSearch = (searchTerm: string) => {
-    if (searchTerm.trim() === "") {
-      dispatch(clearFilters());
-    } else {
-      dispatch(setSearch(searchTerm));
-    }
+    dispatch(setSearch(searchTerm.trim()));
   };
   return (
     <SafeAreaView style={styles.container}>

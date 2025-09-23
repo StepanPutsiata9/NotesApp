@@ -5,37 +5,18 @@ export interface NotesState {
   notes: INote[];
   secretNotes: INote[];
   filtredNotes: INote[];
+  currentFilter: string;
+  currentSearch: string;
+  selectedNote: INote | null;
 }
 
 const initialState: NotesState = {
-  notes: [
-    {
-      isSecret: false,
-      categoryColor: "#FF6B6B",
-      categoryName: "Рассуждения",
-      title: "1",
-      date: "10.01.2024",
-      description: "111111",
-    },
-    {
-      isSecret: false,
-      categoryColor: "#F8C715",
-      categoryName: "Покупки",
-      title: "2",
-      date: "10.01.2024",
-      description: "2222222222222",
-    },
-    {
-      isSecret: false,
-      categoryColor: "#FF6B6B",
-      categoryName: "Цели",
-      title: "3",
-      date: "10.01.2024",
-      description: "333333333333333333333333333333",
-    },
-  ],
+  notes: [],
   secretNotes: [],
   filtredNotes: [],
+  currentFilter: "",
+  currentSearch: "",
+  selectedNote: null,
 };
 
 export const notesSlice = createSlice({
@@ -44,12 +25,16 @@ export const notesSlice = createSlice({
   reducers: {
     deleteNote: (state, action: PayloadAction<string>) => {
       state.notes = state.notes.filter((note) => note.title !== action.payload);
-      state.filtredNotes = state.notes;
+      state.secretNotes = state.secretNotes.filter(
+        (note) => note.title !== action.payload
+      );
+
+      applyFilters(state);
     },
 
     createNewNote: (state, action: PayloadAction<INote>) => {
       state.notes.push(action.payload);
-      state.filtredNotes = state.notes;
+      applyFilters(state);
     },
 
     setSecretNote: (state, action: PayloadAction<string>) => {
@@ -57,13 +42,13 @@ export const notesSlice = createSlice({
       const secretNote = state.secretNotes.find(
         (n) => n.title === action.payload
       ) as INote;
+
       if (note) {
         state.notes = state.notes.filter(
           (note) => note.title !== action.payload
         );
         note.isSecret = true;
         state.secretNotes.push(note);
-        state.filtredNotes = state.notes;
       }
       if (secretNote) {
         state.secretNotes = state.secretNotes.filter(
@@ -71,26 +56,51 @@ export const notesSlice = createSlice({
         );
         secretNote.isSecret = false;
         state.notes.push(secretNote);
-        state.filtredNotes = state.notes;
       }
+
+      applyFilters(state);
     },
 
     setFilter: (state, action: PayloadAction<string>) => {
-      state.filtredNotes = state.notes.filter(
-        (n) => n.categoryName === action.payload
-      );
+      state.currentFilter = action.payload;
+      applyFilters(state);
     },
+
     clearFilters: (state) => {
+      state.currentFilter = "";
+      state.currentSearch = "";
       state.filtredNotes = state.notes;
     },
 
     setSearch: (state, action: PayloadAction<string>) => {
-      state.filtredNotes = state.filtredNotes.filter((item) =>
-        item?.title?.toLowerCase().includes(action.payload.toLowerCase())
-      );
+      state.currentSearch = action.payload;
+      applyFilters(state);
+    },
+
+    redactNote: (state, action: PayloadAction<INote>) => {
+      state.selectedNote = action.payload;
+    },
+    clearSelectedNote: (state) => {
+      state.selectedNote = null;
     },
   },
 });
+
+function applyFilters(state: NotesState) {
+  let filtered = state.notes;
+
+  if (state.currentFilter) {
+    filtered = filtered.filter((n) => n.categoryName === state.currentFilter);
+  }
+
+  if (state.currentSearch) {
+    filtered = filtered.filter((item) =>
+      item?.title?.toLowerCase().includes(state.currentSearch.toLowerCase())
+    );
+  }
+
+  state.filtredNotes = filtered;
+}
 
 export const {
   deleteNote,
@@ -99,5 +109,7 @@ export const {
   setFilter,
   clearFilters,
   setSearch,
+  redactNote,
+  clearSelectedNote,
 } = notesSlice.actions;
 export default notesSlice.reducer;

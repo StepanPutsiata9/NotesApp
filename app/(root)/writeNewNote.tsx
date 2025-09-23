@@ -1,4 +1,4 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -9,10 +9,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { createNewNote } from "@/store/slices/notesSlice";
+import { clearSelectedNote, createNewNote } from "@/store/slices/notesSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useAppDispatch } from "../../store/store";
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "../../store/store";
 
 export default function NoteEditor() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function NoteEditor() {
   const dispatch = useAppDispatch();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-
+  const { selectedNote } = useSelector((state: RootState) => state.notes);
   const handleSaveNote = () => {
     const formatDate = (date: Date, separator: string = "-") => {
       const day = String(date.getDate()).padStart(2, "0");
@@ -28,21 +29,25 @@ export default function NoteEditor() {
       const year = date.getFullYear();
       return `${day}${separator}${month}${separator}${year}`;
     };
-
-    dispatch(
-      createNewNote({
-        title: title,
-        isSecret: false,
-        categoryColor: params.color as string,
-        categoryName: params.title as string,
-        description: content,
-        date: formatDate(new Date()),
-      })
-    );
-
+    if (!selectedNote) {
+      dispatch(
+        createNewNote({
+          title: title,
+          isSecret: false,
+          categoryColor: params.color as string,
+          categoryName: params.title as string,
+          description: content,
+          date: formatDate(new Date()),
+        })
+      );
+    } else {
+    }
+    dispatch(clearSelectedNote());
     router.push("/(root)");
   };
-
+  useFocusEffect(() => {
+    return () => dispatch(clearSelectedNote());
+  });
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -52,7 +57,9 @@ export default function NoteEditor() {
         >
           <Ionicons name="arrow-back-sharp" size={24} color="#6A3EA1" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Новая заметка</Text>
+        <Text style={styles.headerTitle}>
+          {selectedNote ? "Изменение заметки" : "Новая заметка"}
+        </Text>
         <TouchableOpacity onPress={handleSaveNote}>
           <Text style={styles.saveButtonText}>Сохранить</Text>
         </TouchableOpacity>
@@ -73,17 +80,23 @@ export default function NoteEditor() {
           <View
             style={[
               styles.categoryColor,
-              { backgroundColor: params.color as string },
+              {
+                backgroundColor:
+                  (params.color as string) ||
+                  (selectedNote?.categoryColor as string),
+              },
             ]}
           ></View>
-          <Text style={styles.categoryTitle}>{params.title}</Text>
+          <Text style={styles.categoryTitle}>
+            {params.title || selectedNote?.categoryName}
+          </Text>
         </View>
         <View style={styles.titleSection}>
           <TextInput
             style={styles.titleInput}
             placeholder="Введите название..."
             placeholderTextColor="#999"
-            value={title}
+            value={title || selectedNote?.title}
             onChangeText={setTitle}
             maxLength={100}
             multiline={true}
@@ -96,7 +109,7 @@ export default function NoteEditor() {
             style={styles.contentInput}
             placeholder="Начните писать здесь..."
             placeholderTextColor="#999"
-            value={content}
+            value={content || selectedNote?.description}
             onChangeText={setContent}
             multiline={true}
             textAlignVertical="top"

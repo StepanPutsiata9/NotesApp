@@ -1,6 +1,5 @@
 import SubHeader from "@/components/SubHeader";
 import { category } from "@/constans";
-import Feather from "@expo/vector-icons/Feather";
 import {
   Alert,
   ScrollView,
@@ -71,9 +70,7 @@ export default function CreateNotes() {
   });
   const selectCategory = (category: SelectedCategory) => {
     setSelectedCategory(category);
-  };
-  const router = useRouter();
-  const handleCreateNotes = () => {
+    const selected = category;
     if (selectedCategory.title === "") {
       Alert.alert("Нужно выбрать категорию!");
       return;
@@ -81,11 +78,12 @@ export default function CreateNotes() {
     router.push({
       pathname: "/writeNewNote",
       params: {
-        title: selectedCategory.title,
-        color: selectedCategory.color,
+        title: selected.title,
+        color: selected.color,
       },
     });
   };
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.container}>
       <SubHeader title={"Новая заметка"} />
@@ -100,19 +98,19 @@ export default function CreateNotes() {
           </Text>
         </Text>
       </View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {memoizedCategories.map((c, index) => (
           <CategoryItem key={index} c={c} selectCategory={selectCategory} />
         ))}
       </ScrollView>
 
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.continueButton}
         onPress={handleCreateNotes}
       >
         <Text style={styles.btnText}>Создать заметку</Text>
         <Feather name="arrow-right" size={24} color="#fff" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </SafeAreaView>
   );
 }
